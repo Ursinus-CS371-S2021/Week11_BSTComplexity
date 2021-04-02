@@ -138,30 +138,30 @@ class BinaryTree(object):
         return res
 
 
-def rotateright(u, lookup):
-    assert(u.left)
-    w = u.left
+def rotateleft(w, lookup):
+    assert(w.right)
+    u = w.right
     A = w.left
-    B = w.right
+    B = u.left
     C = u.right
     w.key, u.key = u.key, w.key
     w, u = u, w
     lookup[w.key] = w
     lookup[u.key] = u
     w.left = A
-    w.right = u
-    u.left = B
+    w.right = B
     u.right = C
+    u.left = w
 
-def rotateleft(w, lookup):
-    assert(w.right)
-    u = w.right
-    ## TODO: Fill this in; store A, B, and C
+def rotateright(u, lookup):
+    assert(u.left)
+    w = u.left
+    ## TODO: Fill this in; save A, B, and C
     w.key, u.key = u.key, w.key
     w, u = u, w
     lookup[w.key] = w
     lookup[u.key] = u
-    ## TODO: Fill this in; re-assign children
+    ## TODO: Fill this in; re-assign children of w and u
 
 def make_tree1():
     T = BinaryTree()
