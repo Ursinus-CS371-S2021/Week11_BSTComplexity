@@ -182,20 +182,20 @@ def tree_rotation_example():
     
     plt.figure(figsize=(15, 6))
     T.draw()
-    plt.savefig("1.svg", bbox_inches='tight')
+    plt.savefig("1.png", bbox_inches='tight')
     print(T.inorder())
     
     rotateleft(lookup[85], lookup)
     print(T.inorder())
     plt.clf()
     T.draw()
-    plt.savefig("2.svg", bbox_inches='tight')
+    plt.savefig("2.png", bbox_inches='tight')
     
     rotateleft(lookup[30], lookup)
     print(T.inorder())
     plt.clf()
     T.draw()
-    plt.savefig("3.svg", bbox_inches='tight')
+    plt.savefig("3.png", bbox_inches='tight')
 
 
 tree_rotation_example()
