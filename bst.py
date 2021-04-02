@@ -156,18 +156,12 @@ def rotateright(u, lookup):
 def rotateleft(w, lookup):
     assert(w.right)
     u = w.right
-    ## TODO: Fill this in
-    A = w.left
-    B = u.left
-    C = u.right
+    ## TODO: Fill this in; store A, B, and C
     w.key, u.key = u.key, w.key
     w, u = u, w
     lookup[w.key] = w
     lookup[u.key] = u
-    w.left = A
-    w.right = B
-    u.right = C
-    u.left = w
+    ## TODO: Fill this in; re-assign children
 
 def make_tree1():
     T = BinaryTree()
