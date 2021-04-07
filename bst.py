@@ -6,9 +6,13 @@ class TreeNode(object):
         self.key = key
         self.left = None
         self.right = None
+        self._length = 1
     
     def __str__(self):
         return "{}".format(self.key)
+    
+    def __len__(self):
+        return self._length
 
     def maxnode(self):
         res = self
@@ -45,21 +49,25 @@ class TreeNode(object):
                 self.right = self.right.remove(key)
             else:
                 print("No key {}".format(key), end='.')
+        self._updatelength()
         return self
         
     def add(self, key):
+        ret = None
         if key < self.key:
             if self.left:
-                return self.left.add(key)
+                ret = self.left.add(key)
             else:
                 self.left = TreeNode(key)
-                return self.left
+                ret = self.left
         elif key > self.key:
             if self.right:
-                return self.right.add(key)
+                ret = self.right.add(key)
             else:
                 self.right = TreeNode(key)
-                return self.right
+                ret = self.right
+        self._updatelength()
+        return ret
 
     def contains(self, key):
         res = False
@@ -85,7 +93,7 @@ class TreeNode(object):
         # Draw a dot
         plt.scatter(self.x, self.y, 50, 'k')
         # Draw some text indicating what the key is
-        plt.text(self.x+0.1, self.y+0.1, "{}".format(self.key))
+        plt.text(self.x+0.1, self.y+0.1, "{} ({})".format(self.key, len(self)))
         # Offset in x
         if self.left:
             # Draw a line segment from my node to this left child
@@ -102,6 +110,49 @@ class TreeNode(object):
         res.append(self.key)
         if self.right:
             self.right.inorder(res)
+    
+    def _updatelength(self):
+        self._length = 1
+        if self.left:
+            self._length += len(self.left)
+        if self.right:
+            self._length += len(self.right)
+
+    def rotateleft(self, lookup):
+        # Setup all nodes and subtrees
+        x = self
+        assert(x.right)
+        y = x.right
+        A = x.left
+        B = y.left
+        C = y.right
+        # Switch the role of x and y so 
+        # that y becomes the root of x's entire
+        # subtree
+        x.key, y.key = y.key, x.key
+        x, y = y, x
+        lookup[x.key] = x
+        lookup[y.key] = y
+        # Re-assign subtrees to x and y
+        x.left = A
+        x.right = B
+        y.right = C
+        y.left = x
+        # Update weights of x and y
+        x._length = 1 + len(A) + len(B)
+        y._length = 1 + len(x) + len(C)
+
+    def rotateright(self, lookup):
+        u = self
+        assert(u.left)
+        w = u.left
+        ## TODO: Fill this in; save A, B, and C
+        w.key, u.key = u.key, w.key
+        w, u = u, w
+        lookup[w.key] = w
+        lookup[u.key] = u
+        ## TODO: Fill this in; re-assign children of w and u
+
 
 class BinaryTree(object):
     def __init__(self):
@@ -138,38 +189,6 @@ class BinaryTree(object):
         return res
 
 
-def rotateleft(w, lookup):
-    assert(w.right)
-    u = w.right
-    A = w.left
-    B = u.left
-    C = u.right
-    w.key, u.key = u.key, w.key
-    w, u = u, w
-    lookup[w.key] = w
-    lookup[u.key] = u
-    w.left = A
-    w.right = B
-    u.right = C
-    u.left = w
-
-def rotateright(u, lookup):
-    assert(u.left)
-    w = u.left
-    ## TODO: Fill this in; save A, B, and C
-    w.key, u.key = u.key, w.key
-    w, u = u, w
-    lookup[w.key] = w
-    lookup[u.key] = u
-    ## TODO: Fill this in; re-assign children of w and u
-
-def make_tree1():
-    T = BinaryTree()
-    np.random.seed(2)
-    for key in np.random.permutation(40)*5:
-        T.add(key)
-    return T
-
 def tree_rotation_example():
     T = BinaryTree()
     np.random.seed(3)
@@ -185,17 +204,16 @@ def tree_rotation_example():
     plt.savefig("1.png", bbox_inches='tight')
     print(T.inorder())
     
-    rotateleft(lookup[85], lookup)
+    lookup[85].rotateleft(lookup)
     print(T.inorder())
     plt.clf()
     T.draw()
     plt.savefig("2.png", bbox_inches='tight')
     
-    rotateleft(lookup[30], lookup)
+    lookup[30].rotateleft(lookup)
     print(T.inorder())
     plt.clf()
     T.draw()
     plt.savefig("3.png", bbox_inches='tight')
-
 
 tree_rotation_example()
